@@ -1,0 +1,79 @@
+/* Importando as fontes elegantes do Google Fonts (Playfair para títulos, Montserrat para textos) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f2ee; 
+    color: #333333;
+}
+
+.bg-primary {
+    background-color: #f4f2ee !important;
+    border-bottom: 1px solid #e5e0d8;
+    box-shadow: none !important;
+}
+
+.navbar-dark .navbar-brand {
+    color: #333333 !important;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.btn-primary, .btn-success {
+    background-color: #ffffff !important;
+    border: 1px solid #333333 !important;
+    color: #333333 !important;
+    border-radius: 0px !important; 
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+}
+
+.btn-light, .btn-outline-light {
+    background-color: transparent !important;
+    border: 1px solid #888888 !important;
+    color: #333333 !important;
+    border-radius: 0px !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.btn-light:hover, .btn-outline-light:hover {
+    background-color: #ece9e2 !important;
+}
+
+.card {
+    background-color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+}
+
+.table-light th {
+    background-color: #f4f2ee !important;
+    color: #333333;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    border-bottom: 1px solid #dcd7ce !important;
+}
+
+.form-control, .form-select {
+    border: 1px solid #dcd7ce !important;
+    border-radius: 0px !important;
+    background-color: #fcfbf9 !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #333333 !important;
+    box-shadow: none !important;
+}
