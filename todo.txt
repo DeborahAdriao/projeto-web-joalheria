@@ -1,0 +1,1 @@
+Criar .gitigonore para não subir os arquivos de cache e nem o arquivo do banco
