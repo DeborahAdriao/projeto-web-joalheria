@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware # <-- 1. NOVO IMPORT AQUI NO TOPO
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -10,12 +11,17 @@ import backend.crud.joias_crud as joias_crud
 
 app = FastAPI(title="API Joalheria - Backend")
 
-# Cria as tabelas automaticamente
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
+
 models.Base.metadata.create_all(bind=engine)
 
-# ==============================================================================
-# ROTAS DE CATEGORIAS
-# ==============================================================================
+#Rota para categoria
 
 @app.post("/categorias", response_model=schemas.CategoriaResponse, status_code=status.HTTP_201_CREATED, tags=["Categorias"])
 def rota_criar_categoria(categoria: schemas.CategoriaCreate, db: Session = Depends(get_db)):
@@ -46,9 +52,7 @@ def rota_deletar_categoria(categoria_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria não encontrada.")
     return None
 
-# ==============================================================================
-# ROTAS DE JÓIAS
-# ==============================================================================
+#Rota para Joia
 
 @app.post("/joias", response_model=schemas.JoiaResponse, status_code=status.HTTP_201_CREATED, tags=["Jóias"])
 def rota_criar_joia(joia: schemas.JoiaCreate, db: Session = Depends(get_db)):
