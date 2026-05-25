@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from models import JoiaDB 
-from schemas import JoiaCreate, JoiaResponse
+from backend.models import Joia as JoiaDB 
+from backend import schemas
 
-def criar_joia(db: Session, dados: JoiaCreate): 
+def criar_joia(db: Session, dados: schemas.JoiaCreate): 
+    # Usando model_dump para funcionar perfeitamente com a versão atual do FastAPI
     joia = JoiaDB(**dados.model_dump())
     db.add(joia)
     db.commit()
@@ -15,17 +16,7 @@ def listar_joias(db: Session):
 def buscar_joia(db: Session, joia_id: int):
     return db.query(JoiaDB).filter(JoiaDB.id == joia_id).first()
 
-def atualizar_joia(db: Session, joia_id: int, joia: JoiaCreate):
-    db_joia = buscar_joia(db, joia_id)
-    if db_joia:
-        db_joia.nome = joia.nome
-        db_joia.preco = joia.preco
-        db_joia.categoria_id = joia.categoria_id
-        db.commit()
-        db.refresh(db_joia)
-    return db_joia
-
-def substituir_joia(db: Session, joia_id: int, joia: JoiaCreate):
+def atualizar_joia(db: Session, joia_id: int, joia: schemas.JoiaCreate):
     db_joia = buscar_joia(db, joia_id)
     if db_joia:
         db_joia.nome = joia.nome
