@@ -1,0 +1,12 @@
+# Ambiente Virtual
+.venv
+.venv/
+venv/
+
+# Banco de Dados
+*.db
+joalheria.db
+
+# Arquivos de sistema do Python
+__pycache__/
+*.pyc
