@@ -14,7 +14,6 @@ class CategoriaResponse(CategoriaBase):
     class Config:
         from_attributes = True
 
-
 # SCHEMAS DE JÓIA
 
 class JoiaBase(BaseModel):
