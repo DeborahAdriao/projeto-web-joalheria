@@ -1,0 +1,74 @@
+const API_JOIAS = 'http://127.0.0.1:8000/joias';
+const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
+
+$(document).ready(function() {
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const joiaId = urlParams.get('id');
+
+    if (!joiaId) {
+        alert('Nenhuma joia selecionada!');
+        window.location.href = '../';
+        return;
+    }
+
+    inicializarEdicao(joiaId);
+
+    $('#form-editar-joia').submit(function(event) {
+        event.preventDefault();
+
+        $('#mensagem-erro').addClass('d-none');
+
+        const pacoteDeDados = {
+            nome: $('#nome').val().trim(),
+            preco: parseFloat($('#preco').val()),
+            categoria_id: parseInt($('#categoria_id').val())
+        };
+
+        fetch(`${API_JOIAS}/${joiaId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pacoteDeDados)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Joia atualizada com sucesso!');
+                window.location.href = '../';
+            } else {
+                throw new Error('Erro ao atualizar');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            $('#mensagem-erro').text('Erro ao atualizar a joia. Verifique os dados.').removeClass('d-none');
+        });
+    });
+});
+
+async function inicializarEdicao(id) {
+    try {
+        const [resCat, resJoia] = await Promise.all([
+            fetch(API_CATEGORIAS),
+            fetch(`${API_JOIAS}/${id}`)
+        ]);
+
+        if (!resCat.ok || !resJoia.ok) throw new Error('Falha ao carregar dados');
+
+        const categorias = await resCat.json();
+        const joia = await resJoia.json();
+
+        const select = $('#categoria_id');
+        select.empty();
+        categorias.forEach(cat => {
+            const selecionada = (cat.id === joia.categoria_id) ? 'selected' : '';
+            select.append(`<option value="${cat.id}" ${selecionada}>${cat.nome}</option>`);
+        });
+
+        $('#nome').val(joia.nome);
+        $('#preco').val(joia.preco);
+
+    } catch (error) {
+        console.error('Erro:', error);
+        $('#mensagem-erro').text('Erro ao carregar dados da joia.').removeClass('d-none');
+    }
+}
