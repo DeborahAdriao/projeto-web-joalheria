@@ -3,7 +3,6 @@ from backend.models import Joia as JoiaDB
 from backend import schemas
 
 def criar_joia(db: Session, dados: schemas.JoiaCreate): 
-    # Usando model_dump para funcionar perfeitamente com a versão atual do FastAPI
     joia = JoiaDB(**dados.model_dump())
     db.add(joia)
     db.commit()
