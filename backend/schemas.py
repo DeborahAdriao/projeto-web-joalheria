@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 
-# ==========================
 # SCHEMAS DE CATEGORIA
-# ==========================
+
 class CategoriaBase(BaseModel):
     nome: str
 
@@ -15,9 +14,8 @@ class CategoriaResponse(CategoriaBase):
     class Config:
         from_attributes = True
 
-# ==========================
 # SCHEMAS DE JÓIA
-# ==========================
+
 class JoiaBase(BaseModel):
     nome: str
     preco: float
