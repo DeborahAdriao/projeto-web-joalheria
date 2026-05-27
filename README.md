@@ -33,23 +33,27 @@ Abra o terminal na pasta raiz do projeto.
   ```bash
   python -m venv .venv
   .\.venv\Scripts\activate
+  ```
 
 * No Mac/Linux:
   ```bash
   python3 -m venv .venv
   source .venv/bin/activate
+  ```
   
 **Passo B: Instalar as dependências necessárias**
 Com o ambiente ativado, rode:
 
   ```bash
   pip install fastapi uvicorn sqlalchemy pydantic
+  ```
 
 **Passo C: Iniciar o servidor**
 Ainda na pasta raiz, execute o comando:
 
   ```bash
   uvicorn backend.main:app --reload
+  ```
 
 O backend estará disponível em: http://127.0.0.1:8000
 
