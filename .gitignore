@@ -8,5 +8,5 @@ venv/
 joalheria.db
 
 # Arquivos de sistema do Python
-**_pycache_/ 
+**/__pycache__/
 *.pyc
