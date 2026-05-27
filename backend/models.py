@@ -8,8 +8,7 @@ class Categoria(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String, unique=True, index=True)
 
-    # Relação com as joias
-    joias = relationship("Joia", back_populates="categoria")
+    joias = relationship("Joia", back_populates="categoria", cascade="all, delete-orphan")
 
 class Joia(Base):
     __tablename__ = "joias"
@@ -19,5 +18,4 @@ class Joia(Base):
     preco = Column(Float)
     categoria_id = Column(Integer, ForeignKey("categorias.id"))
 
-    # Relação com a categoria
     categoria = relationship("Categoria", back_populates="joias")

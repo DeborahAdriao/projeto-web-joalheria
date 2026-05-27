@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
-from backend.models import Categoria as CategoriaDB
+from backend.models import Categoria as CategoriaDB, Joia
 from backend import schemas
 
 def create_categoria(db: Session, categoria: schemas.CategoriaCreate):
@@ -26,16 +26,19 @@ def atualizar_categoria(db: Session, categoria_id: int, categoria: schemas.Categ
     return db_categoria
 
 def deletar_categoria(db: Session, categoria_id: int):
-    categoria = buscar_categoria(db, categoria_id)
-    if not categoria:
-        return None    
-    try:
-        db.delete(categoria)
-        db.commit()
-        return True
-    except IntegrityError:
-        db.rollback()
+    db_categoria = db.query(CategoriaDB).filter(CategoriaDB.id == categoria_id).first()
+    
+    if not db_categoria:
+        return None
+        
+    joias_vinculadas = db.query(Joia).filter(Joia.categoria_id == categoria_id).first()
+    
+    if joias_vinculadas:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Não é possível deletar esta categoria pois existem joias vinculadas a ela."
         )
+        
+    db.delete(db_categoria)
+    db.commit()
+    return True
