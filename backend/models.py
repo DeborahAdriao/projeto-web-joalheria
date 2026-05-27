@@ -8,7 +8,7 @@ class Categoria(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String, unique=True, index=True)
 
-    joias = relationship("Joia", back_populates="categoria", cascade="all, delete-orphan")
+    joias = relationship("Joia", back_populates="categoria")
 
 class Joia(Base):
     __tablename__ = "joias"
