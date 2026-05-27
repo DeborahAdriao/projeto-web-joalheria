@@ -35,30 +35,28 @@ async function carregarVitrine() {
         }
 
         joias.forEach(joia => {
-    const nomeDaCategoria = mapaCategorias[joia.categoria_id] || 'Categoria Excluída';
-    
-    const precoFormatado = joia.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const nomeCategoria = mapaCategorias[joia.categoria_id] || 'Sem Categoria';
+            
+            const precoFormatado = joia.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-    const card = `
-        <div class="col">
-            <div class="card h-100 text-center border-0 bg-transparent">
-                <div class="card-body p-4" style="border: 1px solid #e5e0d8; background-color: #ffffff;">
-                    <h5 class="card-title mb-1" style="font-family: 'Playfair Display', serif;">${joia.nome}</h5>
-                    
-                    <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeDaCategoria}</p>
-                    
-                    <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
-                    
-                    <div class="d-flex justify-content-center gap-2">
-                        <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
-                        <button onclick="deletarJoia(${joia.id})" class="btn btn-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
+            const card = `
+                <div class="col">
+                    <div class="card h-100 text-center border-0 bg-transparent">
+                        <div class="card-body p-4" style="border: 1px solid #e5e0d8; background-color: #ffffff;">
+                            <h5 class="card-title mb-1" style="font-family: 'Playfair Display', serif;">${joia.nome}</h5>
+                            <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeCategoria}</p>
+                            <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
+                            
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
+                                <button onclick="deletarJoia(${joia.id})" class="btn btn-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    `;
-    grid.append(card); 
-});
+            `;
+            grid.append(card); 
+        });
 
     } catch (error) {
         console.error('Erro na requisição:', error);
