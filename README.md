@@ -21,29 +21,45 @@ Este é um projeto acadêmico desenvolvido para a disciplina de **Programação 
 
 ---
 
-## Como Rodar o Projeto
+### Como Rodar o Projeto
 
-### 1. Configurando o Backend (Python + FastAPI)
+#### 1. Configurando o Backend (Python + FastAPI)
+
 Certifique-se de ter o Python instalado em sua máquina.
+Abra o terminal na pasta raiz do projeto.
 
-1.  Abra o terminal na pasta raiz do projeto.
-2.  Navegue até a pasta do backend:
-    ```bash
-    cd backend
-    ```
-3.  Instale as dependências necessárias:
-    ```bash
-    pip install fastapi uvicorn
-    ```
-4.  Inicie o servidor:
-    ```bash
-    uvicorn main:app --reload
-    ```
-5.  O backend estará disponível em `http://127.0.0.1:8000`. 
-6.  Acesse a documentação **Swagger** em: `http://127.0.0.1:8000/docs`.
+**Passo A: Criar e ativar o ambiente virtual**
+* No Windows:
+  ```bash
+  python -m venv .venv
+  .\.venv\Scripts\activate
 
-### 2. Configurando o Frontend (HTML + Bootstrap)
+* No Mac/Linux:
+  ```bash
+  python3 -m venv .venv
+  source .venv/bin/activate
+  
+**Passo B: Instalar as dependências necessárias**
+Com o ambiente ativado, rode:
+
+  ```bash
+  pip install fastapi uvicorn sqlalchemy pydantic
+
+**Passo C: Iniciar o servidor**
+Ainda na pasta raiz, execute o comando:
+
+  ```bash
+  uvicorn backend.main:app --reload
+
+O backend estará disponível em: http://127.0.0.1:8000
+
+Acesse a documentação interativa (Swagger) em: http://127.0.0.1:8000/docs
+
+#### 2. Configurando o Frontend (HTML + Bootstrap)
+
 Não é necessário instalar dependências para o frontend, pois utilizamos CDNs para o Bootstrap e jQuery.
+Com o backend já rodando em segundo plano:
 
-1.  Com o backend já rodando, navegue até o arquivo abaixo e abra-o diretamente em seu navegador (ou use a extensão Live Server):
-    `frontend/categorias/index.html`
+Navegue até a pasta frontend pelo seu explorador de arquivos.
+
+Abra o arquivo categorias/index.html ou joias/index.html diretamente em seu navegador (ou utilize a extensão Live Server do VS Code para uma melhor experiência).
