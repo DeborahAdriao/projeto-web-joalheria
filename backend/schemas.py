@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # SCHEMAS DE CATEGORIA
 
@@ -17,7 +17,7 @@ class CategoriaResponse(CategoriaBase):
 # SCHEMAS DE JÓIA
 
 class JoiaBase(BaseModel):
-    nome: str
+    nome: str = Field(min_length=1, strip_whitespace=True)
     preco: float
     categoria_id: int
 
