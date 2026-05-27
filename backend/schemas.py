@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 # SCHEMAS DE CATEGORIA
 
 class CategoriaBase(BaseModel):
-    nome: str
+    nome: str = Field(min_length=1, strip_whitespace=True)
 
 class CategoriaCreate(CategoriaBase):
     pass
