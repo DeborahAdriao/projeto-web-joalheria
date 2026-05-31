@@ -36,9 +36,18 @@
       <div id="mensagem-erro" class="alert alert-danger d-none text-center rounded-0 border-0"></div>
       
       <h3 class="text-center mb-4" style="font-family: 'Playfair Display', serif; font-style: italic;">Acabou de Chegar</h3>
+      
+      <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+          <div class="input-group shadow-sm">
+            <input type="text" id="input-busca" class="form-control border-dark rounded-0" placeholder="Buscar joia pelo nome..." style="letter-spacing: 0.5px;">
+            <button class="btn btn-dark rounded-0 px-4" type="button" id="btn-buscar" style="letter-spacing: 1px;">BUSCAR</button>
+            <button class="btn btn-outline-dark rounded-0 px-3 d-none" type="button" id="btn-limpar-busca" title="Limpar busca">X</button>
+          </div>
+        </div>
+      </div>
 
       <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4" id="grid-joias">
-        
         <div class="col">
           <div class="card h-100 text-center border-0 bg-transparent">
             <div class="card-body p-0">
@@ -46,29 +55,35 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="d-flex justify-content-center align-items-center mt-5 mb-3 gap-3">
+        <button id="btn-anterior" class="btn btn-outline-dark rounded-0 px-4" disabled style="letter-spacing: 1px;">ANTERIOR</button>
+        <span id="texto-paginacao" class="text-muted" style="font-family: 'Playfair Display', serif; font-style: italic;">Página 1 de 1</span>
+        <button id="btn-proximo" class="btn btn-outline-dark rounded-0 px-4" disabled style="letter-spacing: 1px;">PRÓXIMO</button>
+      </div>
+
+    </div> <div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border-0 shadow">
+          
+          <div class="modal-header bg-dark text-white rounded-0">
+            <h5 class="modal-title" id="modalExcluirLabel" style="font-family: 'Playfair Display', serif;">Confirmar Ação</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          
+          <div class="modal-body text-center py-4">
+            <p class="mb-0 text-muted" id="mensagem-modal-excluir">Tem certeza que deseja excluir este item? Esta ação não poderá ser desfeita.</p>
+          </div>
+          
+          <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+            <button type="button" class="btn btn-outline-dark px-4" style="border-radius: 0; letter-spacing: 1px;" data-bs-dismiss="modal">CANCELAR</button>
+            <button type="button" class="btn btn-danger px-4" style="border-radius: 0; letter-spacing: 1px;" id="btn-confirmar-exclusao">EXCLUIR</button>
+          </div>
+          
         </div>
+      </div>
     </div>
-    <div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-0 border-0 shadow">
-      
-      <div class="modal-header bg-dark text-white rounded-0">
-        <h5 class="modal-title" id="modalExcluirLabel" style="font-family: 'Playfair Display', serif;">Confirmar Ação</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      
-      <div class="modal-body text-center py-4">
-        <p class="mb-0 text-muted" id="mensagem-modal-excluir">Tem certeza que deseja excluir este item? Esta ação não poderá ser desfeita.</p>
-      </div>
-      
-      <div class="modal-footer d-flex justify-content-center border-0 pb-4">
-        <button type="button" class="btn btn-outline-dark px-4" style="border-radius: 0; letter-spacing: 1px;" data-bs-dismiss="modal">CANCELAR</button>
-        <button type="button" class="btn btn-danger px-4" style="border-radius: 0; letter-spacing: 1px;" id="btn-confirmar-exclusao">EXCLUIR</button>
-      </div>
-      
-    </div>
-  </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
