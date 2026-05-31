@@ -1,6 +1,9 @@
 const API_URL = 'http://127.0.0.1:8000/categorias';
+let idParaDeletar = null;
+let modalExcluir; 
 
 $(document).ready(function() {
+    modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
     carregarCategorias();
 });
 
@@ -43,21 +46,32 @@ function carregarCategorias() {
 }
 
 function deletarCategoria(id) {
-    if (confirm('Tem certeza que deseja excluir esta categoria?')) {
-        
-        fetch(`${API_URL}/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (response.ok) {
-                carregarCategorias();
-            } else {
-                alert('Erro ao excluir. O servidor recusou a operação.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert('Não foi possível conectar ao servidor para excluir.');
-        });
-    }
+    idParaDeletar = id; 
+    modalExcluir.show();
 }
+$('#btn-confirmar-exclusao').click(function() {
+    if (!idParaDeletar) return;
+
+    fetch(`${API_URL}/${idParaDeletar}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            modalExcluir.hide();
+            carregarCategorias(); 
+        } else {
+            response.json().then(data => {
+                alert(data.detail || 'Erro ao excluir. O servidor recusou a operação.');
+                modalExcluir.hide();
+            }).catch(() => {
+                alert('Erro ao excluir. O servidor recusou a operação.');
+                modalExcluir.hide();
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Não foi possível conectar ao servidor para excluir.');
+        modalExcluir.hide();
+    });
+});
