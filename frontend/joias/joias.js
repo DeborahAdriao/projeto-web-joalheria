@@ -1,7 +1,10 @@
 const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
+let idParaDeletar = null;
+let modalExcluir;
 
 $(document).ready(function() {
+    modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
     carregarVitrine();
 });
 
@@ -35,8 +38,7 @@ async function carregarVitrine() {
         }
 
         joias.forEach(joia => {
-            const nomeCategoria = mapaCategorias[joia.categoria_id] || 'Sem Categoria';
-            
+            const nomeCategoria = joia.categoria?.nome || mapaCategorias[joia.categoria_id] || 'Sem Categoria';
             const precoFormatado = joia.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
             const card = `
@@ -66,20 +68,28 @@ async function carregarVitrine() {
 }
 
 function deletarJoia(id) {
-    if (confirm('Tem certeza que deseja remover esta joia do catálogo?')) {
-        fetch(`${API_JOIAS}/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (response.ok) {
-                carregarVitrine(); 
-            } else {
-                alert('Erro ao excluir a joia.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert('Não foi possível conectar ao servidor para excluir.');
-        });
-    }
+    idParaDeletar = id; 
+    modalExcluir.show();
 }
+
+$('#btn-confirmar-exclusao').click(function() {
+    if (!idParaDeletar) return;
+
+    fetch(`${API_JOIAS}/${idParaDeletar}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            modalExcluir.hide();
+            carregarVitrine(); 
+        } else {
+            alert('Erro ao excluir a joia.');
+            modalExcluir.hide();
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Não foi possível conectar ao servidor para excluir.');
+        modalExcluir.hide();
+    });
+});
