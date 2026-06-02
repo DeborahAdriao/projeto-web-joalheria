@@ -1,13 +1,15 @@
+if (!localStorage.getItem('token')) {
+    window.location.href = '../../login.html'; 
+}
+
 const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
-    
     carregarCategoriasParaSelect();
 
     $('#form-criar-joia').submit(function(event) {
         event.preventDefault(); 
-
         $('#mensagem-erro').addClass('d-none');
 
         const nomeDigitado = $('#nome').val().trim();
@@ -28,7 +30,8 @@ $(document).ready(function() {
         fetch(API_JOIAS, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
             },
             body: JSON.stringify(pacoteDeDados)
         })
@@ -64,7 +67,6 @@ function carregarCategoriasParaSelect() {
             }
 
             select.append('<option value="">Selecione...</option>');
-
             categorias.forEach(cat => {
                 select.append(`<option value="${cat.id}">${cat.nome}</option>`);
             });

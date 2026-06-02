@@ -1,13 +1,32 @@
 const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
+
 let idParaDeletar = null;
 let modalExcluir;
+
 let paginaAtual = 1;
 let termoBusca = '';
 const LIMITE_POR_PAGINA = 8;
 
+const tokenAtual = localStorage.getItem('token');
+const ehAdmin = tokenAtual !== null; 
+
 $(document).ready(function() {
     modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
+    
+    if (ehAdmin) {
+        $('#btn-sair').click(function() {
+            localStorage.removeItem('token');
+            window.location.reload(); 
+        });
+    } else {
+        $('#btn-sair').text('LOGIN').removeClass('btn-link').addClass('btn-dark').click(function() {
+            window.location.href = '../login.html';
+        });
+        $('a[href="criar/"]').addClass('d-none'); 
+        $('a[href="../categorias/"]').addClass('d-none'); 
+    }
+
     carregarVitrine();
 
     $('#btn-buscar').click(function() {
@@ -98,6 +117,16 @@ async function carregarVitrine() {
             const nomeCategoria = joia.categoria?.nome || mapaCategorias[joia.categoria_id] || 'Sem Categoria';
             const precoFormatado = joia.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+            let botoesAcao = '';
+            if (ehAdmin) {
+                botoesAcao = `
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
+                        <button onclick="deletarJoia(${joia.id})" class="btn btn-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
+                    </div>
+                `;
+            }
+
             const card = `
                 <div class="col">
                     <div class="card h-100 text-center border-0 bg-transparent">
@@ -106,10 +135,7 @@ async function carregarVitrine() {
                             <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeCategoria}</p>
                             <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
                             
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
-                                <button onclick="deletarJoia(${joia.id})" class="btn btn-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
-                            </div>
+                            ${botoesAcao}
                         </div>
                     </div>
                 </div>
@@ -133,14 +159,17 @@ $('#btn-confirmar-exclusao').click(function() {
     if (!idParaDeletar) return;
 
     fetch(`${API_JOIAS}/${idParaDeletar}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${tokenAtual}`
+        }
     })
     .then(response => {
         if (response.ok) {
             modalExcluir.hide();
             carregarVitrine(); 
         } else {
-            alert('Erro ao excluir a joia.');
+            alert('Erro ao excluir a joia. Você tem permissão?');
             modalExcluir.hide();
         }
     })

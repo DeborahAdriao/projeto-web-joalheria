@@ -1,8 +1,11 @@
+if (!localStorage.getItem('token')) {
+    window.location.href = '../../login.html'; 
+}
+
 const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
-    
     const urlParams = new URLSearchParams(window.location.search);
     const joiaId = urlParams.get('id');
 
@@ -16,7 +19,6 @@ $(document).ready(function() {
 
     $('#form-editar-joia').submit(function(event) {
         event.preventDefault();
-
         $('#mensagem-erro').addClass('d-none');
 
         const pacoteDeDados = {
@@ -27,7 +29,10 @@ $(document).ready(function() {
 
         fetch(`${API_JOIAS}/${joiaId}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            },
             body: JSON.stringify(pacoteDeDados)
         })
         .then(response => {
