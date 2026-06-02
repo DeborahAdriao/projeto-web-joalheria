@@ -1,19 +1,80 @@
 const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
+
 let idParaDeletar = null;
 let modalExcluir;
 
+let paginaAtual = 1;
+let termoBusca = '';
+const LIMITE_POR_PAGINA = 8;
+
+const tokenAtual = localStorage.getItem('token');
+const ehAdmin = tokenAtual !== null; 
+
 $(document).ready(function() {
     modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
+    
+    if (ehAdmin) {
+        $('#btn-sair').click(function() {
+            localStorage.removeItem('token');
+            window.location.reload(); 
+        });
+    } else {
+        $('#btn-sair').text('LOGIN').removeClass('btn-link').addClass('btn-dark').click(function() {
+            window.location.href = '../login.html';
+        });
+        $('a[href="criar/"]').addClass('d-none'); 
+        $('a[href="../categorias/"]').addClass('d-none'); 
+    }
+
     carregarVitrine();
+
+    $('#btn-buscar').click(function() {
+        termoBusca = $('#input-busca').val().trim();
+        paginaAtual = 1; 
+        
+        if (termoBusca) {
+            $('#btn-limpar-busca').removeClass('d-none');
+        } else {
+            $('#btn-limpar-busca').addClass('d-none');
+        }
+        
+        carregarVitrine();
+    });
+
+    $('#btn-limpar-busca').click(function() {
+        $('#input-busca').val('');
+        termoBusca = '';
+        paginaAtual = 1;
+        $('#btn-limpar-busca').addClass('d-none');
+        
+        carregarVitrine();
+    });
+
+    $('#btn-anterior').click(function() {
+        if (paginaAtual > 1) {
+            paginaAtual--;
+            carregarVitrine();
+        }
+    });
+
+    $('#btn-proximo').click(function() {
+        paginaAtual++;
+        carregarVitrine();
+    });
 });
 
 async function carregarVitrine() {
     $('#mensagem-erro').addClass('d-none');
 
     try {
+        let urlBusca = `${API_JOIAS}?page=${paginaAtual}&limit=${LIMITE_POR_PAGINA}`;
+        if (termoBusca) {
+            urlBusca += `&nome=${encodeURIComponent(termoBusca)}`;
+        }
+
         const [respostaJoias, respostaCategorias] = await Promise.all([
-            fetch(API_JOIAS),
+            fetch(urlBusca), 
             fetch(API_CATEGORIAS)
         ]);
 
@@ -21,8 +82,23 @@ async function carregarVitrine() {
             throw new Error('Falha ao buscar dados do servidor');
         }
 
-        const joias = await respostaJoias.json();
+        const dataJoias = await respostaJoias.json();
         const categorias = await respostaCategorias.json();
+
+        let joias = [];
+        let totalPaginas = 1;
+
+        if (Array.isArray(dataJoias)) {
+            joias = dataJoias;
+        } else {
+            joias = dataJoias.data || [];
+            totalPaginas = dataJoias.pages || 1;
+            paginaAtual = dataJoias.page || 1;
+        }
+
+        $('#texto-paginacao').text(`Página ${paginaAtual} de ${totalPaginas}`);
+        $('#btn-anterior').prop('disabled', paginaAtual <= 1);
+        $('#btn-proximo').prop('disabled', paginaAtual >= totalPaginas);
 
         const mapaCategorias = {};
         categorias.forEach(cat => {
@@ -33,13 +109,23 @@ async function carregarVitrine() {
         grid.empty();
 
         if (joias.length === 0) {
-            grid.append('<div class="col-12 text-center mt-5"><p class="text-muted" style="font-style: italic;">O catálogo está vazio. Cadastre a primeira joia!</p></div>');
+            grid.append('<div class="col-12 text-center mt-5"><p class="text-muted" style="font-style: italic;">Nenhuma joia encontrada.</p></div>');
             return;
         }
 
         joias.forEach(joia => {
             const nomeCategoria = joia.categoria?.nome || mapaCategorias[joia.categoria_id] || 'Sem Categoria';
             const precoFormatado = joia.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            let botoesAcao = '';
+            if (ehAdmin) {
+                botoesAcao = `
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
+                        <button onclick="deletarJoia(${joia.id})" class="btn btn-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
+                    </div>
+                `;
+            }
 
             const card = `
                 <div class="col">
@@ -49,10 +135,7 @@ async function carregarVitrine() {
                             <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeCategoria}</p>
                             <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
                             
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
-                                <button onclick="deletarJoia(${joia.id})" class="btn btn-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
-                            </div>
+                            ${botoesAcao}
                         </div>
                     </div>
                 </div>
@@ -76,14 +159,17 @@ $('#btn-confirmar-exclusao').click(function() {
     if (!idParaDeletar) return;
 
     fetch(`${API_JOIAS}/${idParaDeletar}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${tokenAtual}`
+        }
     })
     .then(response => {
         if (response.ok) {
             modalExcluir.hide();
             carregarVitrine(); 
         } else {
-            alert('Erro ao excluir a joia.');
+            alert('Erro ao excluir a joia. Você tem permissão?');
             modalExcluir.hide();
         }
     })

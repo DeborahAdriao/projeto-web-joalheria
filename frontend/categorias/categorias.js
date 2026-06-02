@@ -1,3 +1,7 @@
+if (!localStorage.getItem('token')) {
+    window.location.href = '../login.html'; 
+}
+
 const API_URL = 'http://127.0.0.1:8000/categorias';
 let idParaDeletar = null;
 let modalExcluir; 
@@ -49,11 +53,15 @@ function deletarCategoria(id) {
     idParaDeletar = id; 
     modalExcluir.show();
 }
+
 $('#btn-confirmar-exclusao').click(function() {
     if (!idParaDeletar) return;
 
     fetch(`${API_URL}/${idParaDeletar}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
     })
     .then(response => {
         if (response.ok) {

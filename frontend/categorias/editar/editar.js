@@ -1,8 +1,10 @@
+if (!localStorage.getItem('token')) {
+    window.location.href = '../../login.html'; 
+}
+
 const API_URL = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
-    
-    
     const urlParams = new URLSearchParams(window.location.search);
     const categoriaId = urlParams.get('id');
     
@@ -36,22 +38,20 @@ $(document).ready(function() {
             return;
         }
 
-        const pacoteDeDados = {
-            nome: nomeAtualizado
-        };
+        const pacoteDeDados = { nome: nomeAtualizado };
 
         fetch(`${API_URL}/${categoriaId}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // Token incluído!
             },
             body: JSON.stringify(pacoteDeDados)
         })
         .then(response => {
             if (response.ok) {
-                alert('Categoria atualizada com sucesso!');
+                alert('Categoria updated com sucesso!');
                 window.location.href = '../'; 
-                
             } else {
                 throw new Error('O servidor recusou a atualização.');
             }
