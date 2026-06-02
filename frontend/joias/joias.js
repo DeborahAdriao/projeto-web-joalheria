@@ -2,18 +2,60 @@ const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
 let idParaDeletar = null;
 let modalExcluir;
+let paginaAtual = 1;
+let termoBusca = '';
+const LIMITE_POR_PAGINA = 8;
 
 $(document).ready(function() {
     modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
     carregarVitrine();
+
+    $('#btn-buscar').click(function() {
+        termoBusca = $('#input-busca').val().trim();
+        paginaAtual = 1; 
+        
+        if (termoBusca) {
+            $('#btn-limpar-busca').removeClass('d-none');
+        } else {
+            $('#btn-limpar-busca').addClass('d-none');
+        }
+        
+        carregarVitrine();
+    });
+
+    $('#btn-limpar-busca').click(function() {
+        $('#input-busca').val('');
+        termoBusca = '';
+        paginaAtual = 1;
+        $('#btn-limpar-busca').addClass('d-none');
+        
+        carregarVitrine();
+    });
+
+    $('#btn-anterior').click(function() {
+        if (paginaAtual > 1) {
+            paginaAtual--;
+            carregarVitrine();
+        }
+    });
+
+    $('#btn-proximo').click(function() {
+        paginaAtual++;
+        carregarVitrine();
+    });
 });
 
 async function carregarVitrine() {
     $('#mensagem-erro').addClass('d-none');
 
     try {
+        let urlBusca = `${API_JOIAS}?page=${paginaAtual}&limit=${LIMITE_POR_PAGINA}`;
+        if (termoBusca) {
+            urlBusca += `&nome=${encodeURIComponent(termoBusca)}`;
+        }
+
         const [respostaJoias, respostaCategorias] = await Promise.all([
-            fetch(API_JOIAS),
+            fetch(urlBusca), 
             fetch(API_CATEGORIAS)
         ]);
 
@@ -21,8 +63,23 @@ async function carregarVitrine() {
             throw new Error('Falha ao buscar dados do servidor');
         }
 
-        const joias = await respostaJoias.json();
+        const dataJoias = await respostaJoias.json();
         const categorias = await respostaCategorias.json();
+
+        let joias = [];
+        let totalPaginas = 1;
+
+        if (Array.isArray(dataJoias)) {
+            joias = dataJoias;
+        } else {
+            joias = dataJoias.data || [];
+            totalPaginas = dataJoias.pages || 1;
+            paginaAtual = dataJoias.page || 1;
+        }
+
+        $('#texto-paginacao').text(`Página ${paginaAtual} de ${totalPaginas}`);
+        $('#btn-anterior').prop('disabled', paginaAtual <= 1);
+        $('#btn-proximo').prop('disabled', paginaAtual >= totalPaginas);
 
         const mapaCategorias = {};
         categorias.forEach(cat => {
@@ -33,7 +90,7 @@ async function carregarVitrine() {
         grid.empty();
 
         if (joias.length === 0) {
-            grid.append('<div class="col-12 text-center mt-5"><p class="text-muted" style="font-style: italic;">O catálogo está vazio. Cadastre a primeira joia!</p></div>');
+            grid.append('<div class="col-12 text-center mt-5"><p class="text-muted" style="font-style: italic;">Nenhuma joia encontrada.</p></div>');
             return;
         }
 
