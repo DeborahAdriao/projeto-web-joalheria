@@ -19,3 +19,6 @@ class Joia(Base):
     categoria_id = Column(Integer, ForeignKey("categorias.id"))
 
     categoria = relationship("Categoria", back_populates="joias")
+
+
+   

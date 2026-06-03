@@ -61,9 +61,14 @@ def rota_criar_joia(joia: schemas.JoiaCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria inválida.")
     return joias_crud.criar_joia(db=db, dados=joia)
 
-@app.get("/joias", response_model=List[schemas.JoiaResponse], tags=["Jóias"])
-def rota_listar_joias(db: Session = Depends(get_db)):
-    return joias_crud.listar_joias(db=db)
+@app.get("/joias", response_model=schemas.JoiaPaginada, tags=["Jóias"]) 
+def rota_listar_joias(
+    nome: str = None, 
+    page: int = 1,      
+    limit: int = 10,    
+    db: Session = Depends(get_db)
+):
+    return joias_crud.listar_joias(db=db, nome=nome, page=page, limit=limit)
 
 @app.get("/joias/{joia_id}", response_model=schemas.JoiaResponse, tags=["Jóias"])
 def rota_buscar_joia(joia_id: int, db: Session = Depends(get_db)):
