@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware # <-- 1. NOVO IMPORT AQUI NO 
 from sqlalchemy.orm import Session
 from typing import List
 
+#só p/ login
+from fastapi import HTTPException, status
+from backend import schemas
+
 from backend import models, schemas
 from backend.database import engine, get_db
 
@@ -93,3 +97,14 @@ def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db)):
     if not db_joia:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return None
+
+
+@app.post("/login")
+def login(dados: schemas.LoginSimples):
+    if dados.email == "admin@joalheria.com":
+        return {"status": "sucesso", "mensagem": "Acesso liberado"}
+    
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail="E-mail inválido"
+    )
