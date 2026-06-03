@@ -1,5 +1,6 @@
 from typing import List                     
 from pydantic import BaseModel, Field
+from typing import List
 
 
 class CategoriaBase(BaseModel):
@@ -16,6 +17,8 @@ class CategoriaResponse(CategoriaBase):
         from_attributes = True
 
 
+# SCHEMAS DE JÓIA
+
 class JoiaBase(BaseModel):
     nome: str = Field(min_length=1, strip_whitespace=True)
     preco: float
@@ -27,6 +30,16 @@ class JoiaCreate(JoiaBase):
 class JoiaResponse(JoiaBase):
     id: int
     categoria: CategoriaResponse 
+
+    class Config:
+        from_attributes = True
+        
+class JoiaPaginada(BaseModel):
+    data: List[JoiaResponse] 
+    total: int               
+    page: int                
+    limit: int               
+    pages: int               
 
     class Config:
         from_attributes = True
