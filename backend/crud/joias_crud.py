@@ -1,15 +1,16 @@
+import math
 from sqlalchemy.orm import Session
-from backend.models import Joia as JoiaDB 
-from backend import schemas
-
+from backend import models, schemas
+from backend.schemas import JoiaCreate  
 
 
 def criar_joia(db: Session, dados: JoiaCreate):
-    db_joia = Joia(**dados.model_dump()) 
+    db_joia = models.Joia(**dados.model_dump()) 
     db.add(db_joia)
     db.commit()
     db.refresh(db_joia) 
     return db_joia
+
 
 def listar_joias(db: Session, nome: str = None, page: int = 1, limit: int = 10):
     query = db.query(models.Joia)
@@ -18,12 +19,9 @@ def listar_joias(db: Session, nome: str = None, page: int = 1, limit: int = 10):
         query = query.filter(models.Joia.nome.ilike(f"%{nome}%"))
 
     total_registros = query.count()
-
     offset = (page - 1) * limit
-
     joias = query.offset(offset).limit(limit).all()
     
-    import math
     total_paginas = math.ceil(total_registros / limit)
     
     return {
@@ -34,9 +32,11 @@ def listar_joias(db: Session, nome: str = None, page: int = 1, limit: int = 10):
         "pages": total_paginas
     }
 
-def buscar_joia(db: Session, joia_id: int):
-    return db.query(JoiaDB).filter(JoiaDB.id == joia_id).first()
 
+def buscar_joia(db: Session, joia_id: int):
+    return db.query(models.Joia).filter(models.Joia.id == joia_id).first()
+
+# 4. ATUALIZAR
 def atualizar_joia(db: Session, joia_id: int, joia: schemas.JoiaCreate):
     db_joia = buscar_joia(db, joia_id)
     if db_joia:
@@ -46,6 +46,7 @@ def atualizar_joia(db: Session, joia_id: int, joia: schemas.JoiaCreate):
         db.commit()
         db.refresh(db_joia)
     return db_joia
+
 
 def deletar_joia(db: Session, joia_id: int):
     db_joia = buscar_joia(db, joia_id)
