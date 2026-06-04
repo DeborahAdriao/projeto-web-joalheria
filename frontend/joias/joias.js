@@ -155,6 +155,7 @@ async function carregarVitrine() {
     } catch (error) {
         console.error('Erro na requisição:', error);
         $('#grid-joias').empty();
+        $('#paginacao-container').empty();
         $('#mensagem-erro').text('Falha ao conectar com o servidor para carregar a vitrine. Verifique se o backend está rodando.').removeClass('d-none');
     }
 }

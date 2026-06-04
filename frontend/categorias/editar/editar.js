@@ -5,6 +5,13 @@ if (!localStorage.getItem('token')) {
 const API_URL = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
+    
+    $('#btn-sair').click(function() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email_usuario');
+        window.location.href = '../../login.html';
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const categoriaId = urlParams.get('id');
     

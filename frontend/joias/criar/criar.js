@@ -6,6 +6,13 @@ const API_JOIAS = 'http://127.0.0.1:8000/joias';
 const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
+
+    $('#btn-sair').click(function() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email_usuario');
+        window.location.href = '../../login.html';
+    });
+
     carregarCategoriasParaSelect();
 
     $('#form-criar-joia').submit(function(event) {
