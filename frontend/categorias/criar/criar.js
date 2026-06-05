@@ -5,6 +5,12 @@ const API_URL = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
     
+    $('#btn-sair').click(function() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email_usuario');
+        window.location.href = '../../login.html';
+    });
+
     $('#form-criar-categoria').submit(function(event) {
         
         event.preventDefault();

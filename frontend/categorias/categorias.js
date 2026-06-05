@@ -8,6 +8,13 @@ let modalExcluir;
 
 $(document).ready(function() {
     modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
+
+    $('#btn-sair').click(function() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email_usuario');
+        window.location.href = '../login.html';
+    });
+
     carregarCategorias();
 });
 
