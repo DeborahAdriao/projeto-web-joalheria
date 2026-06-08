@@ -135,13 +135,20 @@ async function carregarVitrine() {
                     </div>
                 `;
             }
+            const imagemUrl = joia.imagem || 'https://via.placeholder.com/300x250?text=Sem+Imagem';
+            const descricaoTexto = joia.descricao || 'Nenhuma descrição informada.';
 
             const card = `
                 <div class="col">
-                    <div class="card h-100 text-center border-0 bg-transparent">
+                    <div class="card h-100 text-center border-0 bg-transparent shadow-sm">
+                        <img src="${imagemUrl}" class="card-img-top rounded-0" alt="${joia.nome}" style="height: 250px; object-fit: cover; border: 1px solid #e5e0d8; border-bottom: none;">
+                        
                         <div class="card-body p-4" style="border: 1px solid #e5e0d8; background-color: #ffffff;">
                             <h5 class="card-title mb-1" style="font-family: 'Playfair Display', serif;">${joia.nome}</h5>
                             <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeCategoria}</p>
+                            
+                            <p class="text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px;">${descricaoTexto}</p>
+                            
                             <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
                             
                             ${botoesAcao}
