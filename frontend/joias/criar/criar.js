@@ -29,9 +29,11 @@ $(document).ready(function() {
         }
 
         const pacoteDeDados = {
-            nome: nomeDigitado,
-            preco: precoDigitado,
-            categoria_id: categoriaEscolhida
+            nome: $('#nome').val().trim(),
+            preco: parseFloat($('#preco').val()),
+            categoria_id: parseInt($('#categoria_id').val()),
+            imagem: $('#imagem').val().trim(),
+            descricao: $('#descricao').val().trim()
         };
 
         fetch(API_JOIAS, {

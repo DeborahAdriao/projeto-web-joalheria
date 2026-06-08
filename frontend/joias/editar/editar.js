@@ -31,7 +31,9 @@ $(document).ready(function() {
         const pacoteDeDados = {
             nome: $('#nome').val().trim(),
             preco: parseFloat($('#preco').val()),
-            categoria_id: parseInt($('#categoria_id').val())
+            categoria_id: parseInt($('#categoria_id').val()),
+            imagem: $('#imagem').val().trim(),
+            descricao: $('#descricao').val().trim()
         };
 
         fetch(`${API_JOIAS}/${joiaId}`, {
@@ -78,6 +80,8 @@ async function inicializarEdicao(id) {
 
         $('#nome').val(joia.nome);
         $('#preco').val(joia.preco);
+        $('#imagem').val(joia.imagem);
+        $('#descricao').val(joia.descricao);
 
     } catch (error) {
         console.error('Erro:', error);
