@@ -75,7 +75,7 @@ Não é necessário instalar dependências para o frontend, pois utilizamos CDNs
 * Navegue até a pasta frontend pelo seu explorador de arquivos.
 * Abra o arquivo login.html (para acessar o sistema como administrador) ou joias/index.html (para visualização pública da vitrine) diretamente em seu navegador, ou utilize a extensão Live Server do VS Code.
 
-## O que foi implementado na Sprint 2
+### O que foi implementado na Sprint 2
 * **Relacionamento (FK):** Joias vinculadas dinamicamente às Categorias (criação via <select> populado pela API).
 
 * **Busca:** Filtragem de joias por nome de forma parcial na vitrine.
