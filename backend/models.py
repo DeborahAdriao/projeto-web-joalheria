@@ -16,10 +16,11 @@ class Joia(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String, index=True)
     preco = Column(Float)
+    descricao = Column(String) 
+    imagem = Column(String)   
     categoria_id = Column(Integer, ForeignKey("categorias.id"))
 
     categoria = relationship("Categoria", back_populates="joias")
-
 
 class Usuario(Base):
     __tablename__ = "usuarios"
