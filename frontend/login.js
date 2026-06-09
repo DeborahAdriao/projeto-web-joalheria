@@ -2,6 +2,7 @@ const API_LOGIN = 'http://127.0.0.1:8000/login';
 
 $(document).ready(function() {
     
+    
     if (localStorage.getItem('token')) {
         window.location.href = 'joias/'; 
     }
@@ -13,31 +14,39 @@ $(document).ready(function() {
         const btnEntrar = $('#btn-entrar');
         btnEntrar.prop('disabled', true).text('VERIFICANDO...');
 
-        const credenciais = {
-            email: $('#email').val().trim(),
-            senha: $('#senha').val().trim()
-        };
+        
+        const emailDigitado = $('#email').val().trim();
+        const senhaDigitada = $('#senha').val().trim();
+
+        
+        const formData = new URLSearchParams();
+        formData.append('username', emailDigitado); 
+        formData.append('password', senhaDigitada); 
 
         fetch(API_LOGIN, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify(credenciais)
+            body: formData 
         })
         .then(response => {
             if (response.ok) {
                 return response.json(); 
             } else if (response.status === 401) {
                 throw new Error('E-mail ou senha incorretos.');
+            } else if (response.status === 422) { 
+                throw new Error('Formato de envio incompatível com o servidor.');
             } else {
                 throw new Error('Erro no servidor ao tentar fazer login. Código: ' + response.status);
             }
         })
         .then(data => {
+            
             if (data.access_token) {
                 localStorage.setItem('token', data.access_token);
-                localStorage.setItem('email_usuario', credenciais.email); 
+                localStorage.setItem('email_usuario', emailDigitado); 
+                
                 
                 window.location.href = 'joias/'; 
             } else {
