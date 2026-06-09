@@ -7,12 +7,18 @@ let idParaDeletar = null;
 let modalExcluir; 
 
 $(document).ready(function() {
+
+    const emailUsuario = localStorage.getItem('email_usuario');
+    if (emailUsuario) {
+        $('#usuario-logado').text(emailUsuario).removeClass('d-none');
+    }
+    
     modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
 
     $('#btn-sair').click(function() {
         localStorage.removeItem('token');
         localStorage.removeItem('email_usuario');
-        window.location.href = '../login.html';
+        window.location.href = '../joias/';
     });
 
     carregarCategorias();
