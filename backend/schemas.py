@@ -53,13 +53,3 @@ class JoiaPaginada(BaseModel):
     class Config:
         from_attributes = True
 
-class JoiaPaginada(BaseModel):
-    data: List[JoiaResponse] 
-    total: int               
-    page: int                
-    limit: int               
-    pages: int               
-
-    class Config:
-        from_attributes = True
-

@@ -7,10 +7,15 @@ const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
 
 $(document).ready(function() {
 
+    const emailUsuario = localStorage.getItem('email_usuario');
+    if (emailUsuario) {
+        $('#usuario-logado').text(emailUsuario).removeClass('d-none');
+    }
+
     $('#btn-sair').click(function() {
         localStorage.removeItem('token');
         localStorage.removeItem('email_usuario');
-        window.location.href = '../../login.html';
+        window.location.href = '../';
     });
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -46,6 +51,7 @@ $(document).ready(function() {
         })
         .then(response => {
             if (response.ok) {
+                event.target.reset();
                 alert('Joia atualizada com sucesso!');
                 window.location.href = '../';
             } else {

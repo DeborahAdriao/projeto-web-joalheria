@@ -20,14 +20,17 @@ $(document).ready(function() {
         $('#btn-sair').click(function() {
             localStorage.removeItem('token');
             localStorage.removeItem('email_usuario'); 
-            window.location.href = '../login.html'; 
+            window.location.reload(); 
         });
     } else {
         $('#usuario-logado').addClass('d-none');
 
-        $('#btn-sair').text('LOGIN').removeClass('btn-link text-dark').addClass('btn-dark text-white').click(function() {
-            window.location.href = '../login.html';
-        });
+        $('#btn-sair').text('LOGIN')
+            .removeClass('btn-link text-dark p-0')
+            .addClass('btn-dark text-white rounded-0 px-4 py-2')
+            .click(function() {
+                window.location.href = '../login.html';
+            });
         
         $('a[href="criar/"]').addClass('d-none'); 
         $('a[href="../categorias/"]').addClass('d-none');  
@@ -196,15 +199,22 @@ function renderizarPaginacao(pagina, total) {
     const container = $('#paginacao-container');
     container.empty();
 
+    const textoPagina = `<div class="w-100 text-center mb-2 text-muted small" style="letter-spacing: 1px; font-weight: 600;">PÁGINA ${pagina} DE ${total}</div>`;
+    container.append(textoPagina);
+
+    const botoesContainer = $('<div class="d-flex justify-content-center gap-1"></div>');
+
     const btnAnterior = `<button class="btn btn-outline-dark rounded-0 px-3 btn-mudar-pagina ${pagina <= 1 ? 'disabled' : ''}" data-pagina="${pagina - 1}">ANTERIOR</button>`;
-    container.append(btnAnterior);
+    botoesContainer.append(btnAnterior);
 
     for (let i = 1; i <= total; i++) {
         const ativo = (i === pagina) ? 'btn-dark' : 'btn-outline-dark';
         const btnNumero = `<button class="btn ${ativo} rounded-0 px-3 btn-mudar-pagina" data-pagina="${i}">${i}</button>`;
-        container.append(btnNumero);
+        botoesContainer.append(btnNumero);
     }
 
     const btnProximo = `<button class="btn btn-outline-dark rounded-0 px-3 btn-mudar-pagina ${pagina >= total ? 'disabled' : ''}" data-pagina="${pagina + 1}">PRÓXIMO</button>`;
-    container.append(btnProximo);
+    botoesContainer.append(btnProximo);
+
+    container.append(botoesContainer);
 }
