@@ -1,17 +1,15 @@
+from sqlalchemy.orm import sessionmaker
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware # <-- 1. NOVO IMPORT AQUI NO TOPO
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 
-#só p/ login
-from fastapi import HTTPException, status
-from backend import schemas
-
-from backend import models, schemas
+from backend import models, schemas, login  
 from backend.database import engine, get_db
-
 import backend.crud.categorias_crud as categoria_crud
 import backend.crud.joias_crud as joias_crud
+
 
 app = FastAPI(title="API Joalheria - Backend")
 
@@ -24,16 +22,37 @@ app.add_middleware(
 )
 
 models.Base.metadata.create_all(bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+db_seed = SessionLocal()
 
-#Rota para categoria
+admin_existe = db_seed.query(models.Usuario).filter(models.Usuario.email == "admin@joalheria.com").first()
+
+if not admin_existe:
+    novo_admin = models.Usuario(email="admin@joalheria.com", senha="admin123")
+    db_seed.add(novo_admin)
+    db_seed.commit()
+
+db_seed.close()
+
+#Rota de Login
+
+@app.post("/login", tags=["Autenticação"])
+def rota_login(dados: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)): 
+    
+    return login.autenticar_usuario(dados, db) 
+
+
+# ROTAS PARA CATEGORIA
 
 @app.post("/categorias", response_model=schemas.CategoriaResponse, status_code=status.HTTP_201_CREATED, tags=["Categorias"])
-def rota_criar_categoria(categoria: schemas.CategoriaCreate, db: Session = Depends(get_db)):
+def rota_criar_categoria(categoria: schemas.CategoriaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     return categoria_crud.create_categoria(db=db, categoria=categoria)
+
 
 @app.get("/categorias", response_model=List[schemas.CategoriaResponse], tags=["Categorias"])
 def rota_listar_categorias(db: Session = Depends(get_db)):
     return categoria_crud.listar_categoria(db=db)
+
 
 @app.get("/categorias/{categoria_id}", response_model=schemas.CategoriaResponse, tags=["Categorias"])
 def rota_buscar_categoria(categoria_id: int, db: Session = Depends(get_db)):
@@ -43,27 +62,32 @@ def rota_buscar_categoria(categoria_id: int, db: Session = Depends(get_db)):
     return db_categoria
 
 @app.put("/categorias/{categoria_id}", response_model=schemas.CategoriaResponse, tags=["Categorias"])
-def rota_atualizar_categoria(categoria_id: int, categoria: schemas.CategoriaCreate, db: Session = Depends(get_db)):
+def rota_atualizar_categoria(categoria_id: int, categoria: schemas.CategoriaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     db_categoria = categoria_crud.atualizar_categoria(db=db, categoria_id=categoria_id, categoria=categoria)
     if not db_categoria:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria não encontrada.")
     return db_categoria
 
+
 @app.delete("/categorias/{categoria_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Categorias"])
-def rota_deletar_categoria(categoria_id: int, db: Session = Depends(get_db)):
+def rota_deletar_categoria(categoria_id: int, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     sucesso = categoria_crud.deletar_categoria(db=db, categoria_id=categoria_id)
     if sucesso is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria não encontrada.")
     return None
 
-#Rota para Joia
+
+
+#  ROTAS PARA JOIA
+
 
 @app.post("/joias", response_model=schemas.JoiaResponse, status_code=status.HTTP_201_CREATED, tags=["Jóias"])
-def rota_criar_joia(joia: schemas.JoiaCreate, db: Session = Depends(get_db)):
+def rota_criar_joia(joia: schemas.JoiaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     categoria_existe = categoria_crud.buscar_categoria(db=db, categoria_id=joia.categoria_id)
     if not categoria_existe:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria inválida.")
     return joias_crud.criar_joia(db=db, dados=joia)
+
 
 @app.get("/joias", response_model=schemas.JoiaPaginada, tags=["Jóias"]) 
 def rota_listar_joias(
@@ -74,6 +98,7 @@ def rota_listar_joias(
 ):
     return joias_crud.listar_joias(db=db, nome=nome, page=page, limit=limit)
 
+
 @app.get("/joias/{joia_id}", response_model=schemas.JoiaResponse, tags=["Jóias"])
 def rota_buscar_joia(joia_id: int, db: Session = Depends(get_db)):
     db_joia = joias_crud.buscar_joia(db=db, joia_id=joia_id)
@@ -81,8 +106,9 @@ def rota_buscar_joia(joia_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return db_joia
 
+
 @app.put("/joias/{joia_id}", response_model=schemas.JoiaResponse, tags=["Jóias"])
-def rota_atualizar_joia(joia_id: int, joia: schemas.JoiaCreate, db: Session = Depends(get_db)):
+def rota_atualizar_joia(joia_id: int, joia: schemas.JoiaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     categoria_existe = categoria_crud.buscar_categoria(db=db, categoria_id=joia.categoria_id)
     if not categoria_existe:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria inválida.")
@@ -91,20 +117,10 @@ def rota_atualizar_joia(joia_id: int, joia: schemas.JoiaCreate, db: Session = De
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return db_joia
 
+
 @app.delete("/joias/{joia_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Jóias"])
-def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db)):
+def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     db_joia = joias_crud.deletar_joia(db=db, joia_id=joia_id)
     if not db_joia:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return None
-
-
-@app.post("/login")
-def login(dados: schemas.LoginSimples):
-    if dados.email == "admin@joalheria.com":
-        return {"status": "sucesso", "mensagem": "Acesso liberado"}
-    
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, 
-        detail="E-mail inválido"
-    )

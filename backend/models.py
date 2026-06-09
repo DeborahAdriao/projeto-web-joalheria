@@ -21,4 +21,9 @@ class Joia(Base):
     categoria = relationship("Categoria", back_populates="joias")
 
 
-   
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    senha = Column(String)  
