@@ -1,6 +1,7 @@
 from typing import List                     
 from pydantic import BaseModel, Field
 from typing import List
+from typing import Optional
 
 #Schemas p/ Login
 
@@ -26,9 +27,11 @@ class CategoriaResponse(CategoriaBase):
 # SCHEMAS DE JÓIA
 
 class JoiaBase(BaseModel):
-    nome: str = Field(min_length=1, strip_whitespace=True)
+    nome: str
     preco: float
     categoria_id: int
+    descricao: Optional[str] = None
+    imagem: Optional[str] = None
 
 class JoiaCreate(JoiaBase):
     pass

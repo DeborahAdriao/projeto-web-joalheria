@@ -38,13 +38,17 @@ def buscar_joia(db: Session, joia_id: int):
 
 # 4. ATUALIZAR
 def atualizar_joia(db: Session, joia_id: int, joia: schemas.JoiaCreate):
-    db_joia = buscar_joia(db, joia_id)
+    db_joia = db.query(models.Joia).filter(models.Joia.id == joia_id).first()
     if db_joia:
         db_joia.nome = joia.nome
         db_joia.preco = joia.preco
         db_joia.categoria_id = joia.categoria_id
+        db_joia.descricao = joia.descricao  
+        db_joia.imagem = joia.imagem        
+        
         db.commit()
         db.refresh(db_joia)
+        
     return db_joia
 
 
