@@ -77,6 +77,9 @@ Não é necessário instalar dependências para o frontend, pois utilizamos CDNs
 
 ## O que foi implementado na Sprint 2
 * **Relacionamento (FK):** Joias vinculadas dinamicamente às Categorias (criação via <select> populado pela API).
+
 * **Busca:** Filtragem de joias por nome de forma parcial na vitrine.
+
 * **Paginação:** Backend retornando dados e metadados (limit, pages, etc.) integrados com os controles de "Anterior/Próximo" no frontend.
+
 * **Autenticação JWT:** Bloqueio de rotas POST/PUT/DELETE, exigência de Token no localStorage e redirecionamento de segurança para usuários não logados.
