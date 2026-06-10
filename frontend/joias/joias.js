@@ -20,7 +20,7 @@ $(document).ready(function() {
         $('#btn-sair').click(function() {
             localStorage.removeItem('token');
             localStorage.removeItem('email_usuario'); 
-            window.location.reload(); 
+            window.location.href = '../login.html'; 
         });
     } else {
         $('#usuario-logado').addClass('d-none');

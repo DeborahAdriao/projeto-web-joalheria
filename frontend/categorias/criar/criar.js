@@ -13,7 +13,7 @@ $(document).ready(function() {
     $('#btn-sair').click(function() {
         localStorage.removeItem('token');
         localStorage.removeItem('email_usuario');
-        window.location.href = '../../joias/';
+        window.location.href = '../../login.html';
     });
 
     $('#form-criar-categoria').submit(function(event) {
