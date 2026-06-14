@@ -22,8 +22,10 @@ $(document).ready(function() {
     const joiaId = urlParams.get('id');
 
     if (!joiaId) {
-        alert('Nenhuma joia selecionada!');
-        window.location.href = '../';
+        mostrarToast('Nenhuma joia selecionada!', 'warning');
+        setTimeout(function() {
+            window.location.href = '../';
+        }, 2000);
         return;
     }
 
@@ -52,8 +54,10 @@ $(document).ready(function() {
         .then(response => {
             if (response.ok) {
                 event.target.reset();
-                alert('Joia atualizada com sucesso!');
-                window.location.href = '../';
+                mostrarToast('Joia atualizada com sucesso! Redirecionando...', 'success');
+                setTimeout(function() {
+                    window.location.href = '../';
+                }, 2000);
             } else {
                 throw new Error('Erro ao atualizar');
             }
@@ -93,4 +97,16 @@ async function inicializarEdicao(id) {
         console.error('Erro:', error);
         $('#mensagem-erro').text('Erro ao carregar dados da joia.').removeClass('d-none');
     }
+}
+
+function mostrarToast(mensagem, cor) {
+    const toastEl = document.getElementById('meuToast');
+    const toastMensagem = document.getElementById('toast-mensagem');
+
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark');
+    toastEl.classList.add(`bg-${cor}`);
+    toastMensagem.textContent = mensagem;
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
 }
