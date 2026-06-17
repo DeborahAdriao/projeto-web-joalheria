@@ -17,7 +17,6 @@ $(document).ready(function() {
     });
 
     $('#form-criar-categoria').submit(function(event) {
-        
         event.preventDefault();
 
         $('#mensagem-erro').addClass('d-none');
@@ -44,16 +43,29 @@ $(document).ready(function() {
         .then(response => {
             if (response.ok) {
                 event.target.reset();
-                alert('Categoria cadastrada com sucesso!');
-                window.location.href = '../'; 
+                mostrarToast('Categoria cadastrada com sucesso! Redirecionando...', 'success');
+                setTimeout(function() {
+                    window.location.href = '../'; 
+                }, 2000);
             } else {
                 throw new Error('O servidor recusou o cadastro.');
             }
         })
-
         .catch(error => {
             console.error('Erro na requisição:', error);
             $('#mensagem-erro').text('Falha ao salvar. Verifique se o backend está rodando.').removeClass('d-none');
         });
     });
 });
+
+function mostrarToast(mensagem, cor) {
+    const toastEl = document.getElementById('meuToast');
+    const toastMensagem = document.getElementById('toast-mensagem');
+
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark');
+    toastEl.classList.add(`bg-${cor}`);
+    toastMensagem.textContent = mensagem;
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+}

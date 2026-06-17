@@ -150,7 +150,7 @@ async function carregarVitrine() {
                             <h5 class="card-title mb-1" style="font-family: 'Playfair Display', serif;">${joia.nome}</h5>
                             <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeCategoria}</p>
                             
-                            <p class="text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px;">${descricaoTexto}</p>
+                            <p class="text-muted small mb-3" title="${descricaoTexto}" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px;">${descricaoTexto}</p>
                             
                             <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
                             
@@ -183,14 +183,15 @@ $('#btn-confirmar-exclusao').click(function() {
         if (response.ok) {
             modalExcluir.hide();
             carregarVitrine(); 
+            mostrarToast('Joia excluída com sucesso!', 'success');
         } else {
-            alert('Erro ao excluir a joia. Você tem permissão?');
+            mostrarToast('Erro ao excluir a joia. Você tem permissão?', 'danger'); 
             modalExcluir.hide();
         }
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Não foi possível conectar ao servidor para excluir.');
+        mostrarToast('Não foi possível conectar ao servidor para excluir.', 'danger'); 
         modalExcluir.hide();
     });
 });
@@ -217,4 +218,17 @@ function renderizarPaginacao(pagina, total) {
     botoesContainer.append(btnProximo);
 
     container.append(botoesContainer);
+}
+
+function mostrarToast(mensagem, cor) {
+    const toastEl = document.getElementById('meuToast');
+    const toastMensagem = document.getElementById('toast-mensagem');
+
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark');
+
+    toastEl.classList.add(`bg-${cor}`);
+    toastMensagem.textContent = mensagem;
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
 }
