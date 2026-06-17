@@ -23,7 +23,7 @@ $(document).ready(function() {
     if (!categoriaId) {
         mostrarToast('Nenhuma categoria selecionada para edição!', 'warning');
         setTimeout(function() {
-            window.location.href = '../';
+            window.location.href = '../index.html';
         }, 2000);
         return;
     }
@@ -67,7 +67,7 @@ $(document).ready(function() {
                 event.target.reset();
                 mostrarToast('Categoria atualizada com sucesso! Redirecionando...', 'success');
                 setTimeout(function() {
-                    window.location.href = '../'; 
+                    window.location.href = '../index.html'; 
                 }, 2000);
             } else {
                 throw new Error('O servidor recusou a atualização.');
