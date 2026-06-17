@@ -24,7 +24,7 @@ $(document).ready(function() {
     if (!joiaId) {
         mostrarToast('Nenhuma joia selecionada!', 'warning');
         setTimeout(function() {
-            window.location.href = '../';
+            window.location.href = '../index.html';
         }, 2000);
         return;
     }
@@ -56,7 +56,7 @@ $(document).ready(function() {
                 event.target.reset();
                 mostrarToast('Joia atualizada com sucesso! Redirecionando...', 'success');
                 setTimeout(function() {
-                    window.location.href = '../';
+                    window.location.href = '../index.html';
                 }, 2000);
             } else {
                 throw new Error('Erro ao atualizar');

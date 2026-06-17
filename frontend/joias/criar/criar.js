@@ -54,7 +54,7 @@ $(document).ready(function() {
                 event.target.reset();
                 mostrarToast('Joia adicionada ao catálogo com sucesso! Redirecionando...', 'success');
                 setTimeout(function() {
-                    window.location.href = '../'; 
+                    window.location.href = '../index.html'; 
                 }, 2000);
             } else {
                 throw new Error('O servidor recusou o cadastro.');

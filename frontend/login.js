@@ -2,9 +2,8 @@ const API_LOGIN = 'http://127.0.0.1:8000/login';
 
 $(document).ready(function() {
     
-    
     if (localStorage.getItem('token')) {
-        window.location.href = 'joias/'; 
+        window.location.href = 'joias/index.html'; 
     }
 
     $('#form-login').submit(function(event) {
@@ -14,11 +13,9 @@ $(document).ready(function() {
         const btnEntrar = $('#btn-entrar');
         btnEntrar.prop('disabled', true).text('VERIFICANDO...');
 
-        
         const emailDigitado = $('#email').val().trim();
         const senhaDigitada = $('#senha').val().trim();
 
-        
         const formData = new URLSearchParams();
         formData.append('username', emailDigitado); 
         formData.append('password', senhaDigitada); 
@@ -42,13 +39,11 @@ $(document).ready(function() {
             }
         })
         .then(data => {
-            
             if (data.access_token) {
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('email_usuario', emailDigitado); 
                 
-                
-                window.location.href = 'joias/'; 
+                window.location.href = 'joias/index.html'; 
             } else {
                 throw new Error('Token de acesso não foi enviado pelo servidor.');
             }

@@ -32,8 +32,8 @@ $(document).ready(function() {
                 window.location.href = '../login.html';
             });
         
-        $('a[href="criar/"]').addClass('d-none'); 
-        $('a[href="../categorias/"]').addClass('d-none');  
+        $('a[href="criar/index.html"]').addClass('d-none'); 
+        $('a[href="../categorias/index.html"]').addClass('d-none');  
     }
 
     carregarVitrine();
