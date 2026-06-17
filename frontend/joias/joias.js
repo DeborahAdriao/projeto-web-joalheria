@@ -133,13 +133,14 @@ async function carregarVitrine() {
             if (ehAdmin) {
                 botoesAcao = `
                     <div class="d-flex justify-content-center gap-2 mt-3">
-                        <a href="editar/?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EDITAR</a>
+                        <a href="editar/index.html?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="...">EDITAR</a>
                         <button class="btn btn-dark btn-sm px-3 btn-deletar-joia" data-id="${joia.id}" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
                     </div>
                 `;
             }
             const imagemUrl = joia.imagem || 'https://via.placeholder.com/300x250?text=Sem+Imagem';
             const descricaoTexto = joia.descricao || 'Nenhuma descrição informada.';
+            const descricaoSegura = descricaoTexto.replace(/"/g, '&quot;');
 
             const card = `
                 <div class="col">
@@ -150,7 +151,7 @@ async function carregarVitrine() {
                             <h5 class="card-title mb-1" style="font-family: 'Playfair Display', serif;">${joia.nome}</h5>
                             <p class="text-muted mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">${nomeCategoria}</p>
                             
-                            <p class="text-muted small mb-3" title="${descricaoTexto}" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px;">${descricaoTexto}</p>
+                            <p class="text-muted small mb-3" title="${descricaoSegura}" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px;">${descricaoTexto}</p>
                             
                             <p class="fw-bold mb-4" style="color: #333333;">${precoFormatado}</p>
                             
@@ -176,23 +177,24 @@ $('#btn-confirmar-exclusao').click(function() {
     fetch(`${API_JOIAS}/${idParaDeletar}`, {
         method: 'DELETE',
         headers: {
-            'Authorization': `Bearer ${tokenAtual}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
     .then(response => {
+        modalExcluir.hide(); 
+
         if (response.ok) {
-            modalExcluir.hide();
-            carregarVitrine(); 
             mostrarToast('Joia excluída com sucesso!', 'success');
+            
+            carregarVitrine(); 
         } else {
             mostrarToast('Erro ao excluir a joia. Você tem permissão?', 'danger'); 
-            modalExcluir.hide();
         }
     })
     .catch(error => {
         console.error('Erro:', error);
-        mostrarToast('Não foi possível conectar ao servidor para excluir.', 'danger'); 
         modalExcluir.hide();
+        mostrarToast('Não foi possível conectar ao servidor para excluir.', 'danger'); 
     });
 });
 
@@ -229,6 +231,11 @@ function mostrarToast(mensagem, cor) {
     toastEl.classList.add(`bg-${cor}`);
     toastMensagem.textContent = mensagem;
 
-    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-    toast.show();
+    let toastFantasma = bootstrap.Toast.getInstance(toastEl);
+    if (toastFantasma) {
+        toastFantasma.dispose(); 
+    }
+
+    const toastNovo = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toastNovo.show();
 }
