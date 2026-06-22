@@ -15,7 +15,7 @@
     <div class="login-container">
       <div class="card p-5 border-0 shadow-sm rounded-0" style="width: 100%; max-width: 400px; background-color: #ffffff;">
         <h2 class="text-center mb-1" style="font-family: 'Playfair Display', serif; letter-spacing: 1px;">Minha Joalheria</h2>
-        <p class="text-center text-muted mb-4" style="font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">Acesso Administrativo</p>
+        <p class="text-center text-muted mb-4" style="font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">Identifique-se para continuar</p>
         
         <div id="mensagem-erro" class="alert alert-danger d-none rounded-0 text-center py-2" style="font-size: 0.9rem;"></div>
 
@@ -26,9 +26,15 @@
           </div>
           <div class="mb-4">
             <label for="senha" class="form-label text-muted" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Senha</label>
-            <input type="password" class="form-control rounded-0 border-dark" id="senha" placeholder="••••••••" required>
+              <input type="password" class="form-control rounded-0 border-dark" id="senha" placeholder="••••••••" required>
           </div>
-          <button type="submit" class="btn btn-dark w-100 rounded-0" id="btn-entrar" style="letter-spacing: 1px;">ENTRAR</button>
+  
+          <button type="submit" class="btn btn-dark w-100 rounded-0 mb-3" id="btn-entrar" style="letter-spacing: 1px;">ENTRAR</button>
+          <div class="text-center mb-2">
+            <a href="cadastro.html" class="text-decoration-none text-muted" style="font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">
+              Não tem conta? Cadastre-se
+            </a>
+          </div>
         </form>
         <div class="text-center mt-4">
         <a href="joias/index.html" class="text-decoration-none text-muted" style="font-size: 0.9rem; letter-spacing: 1px;">
