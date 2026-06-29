@@ -71,9 +71,6 @@ uvicorn backend.main:app --reload
 ```
 ---
 
-* **O backend estará disponível em:** http://127.0.0.1:8000
-* **Acesse a documentação interativa (Swagger) em:** http://127.0.0.1:8000/docs
-
 ### 2. Configurando o Frontend (HTML + Bootstrap)
 Não é necessário instalar dependências para o frontend, pois utilizamos CDNs para o Bootstrap e jQuery. Com o backend já rodando em segundo plano:
 
@@ -85,5 +82,5 @@ Não é necessário instalar dependências para o frontend, pois utilizamos CDNs
 ## Links em Produção
 * **O backend estará disponível em:** http://127.0.0.1:8000
 * **Acesse a documentação interativa (Swagger) em:** http://127.0.0.1:8000/docs
-* **Frontend da Aplicação:** [COLOCAR]
+* **Frontend da Aplicação:** [https://projeto-web-joalheria.onrender.com/login.html]
 * **Backend (API):** [COLOCAR]
