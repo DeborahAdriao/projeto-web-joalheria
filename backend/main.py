@@ -61,14 +61,14 @@ def rota_listar_categorias(db: Session = Depends(get_db)):
     return categoria_crud.listar_categoria(db=db)
 
 
-@app.get("/categorias/{categoria_id}", response_model=schemas.CategoriaResponse, tags=["Categorias"])
+@app.get("/categorias/{categoria_id:int}", response_model=schemas.CategoriaResponse, tags=["Categorias"])
 def rota_buscar_categoria(categoria_id: int, db: Session = Depends(get_db)):
     db_categoria = categoria_crud.buscar_categoria(db=db, categoria_id=categoria_id)
     if not db_categoria:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria não encontrada.")
     return db_categoria
 
-@app.put("/categorias/{categoria_id}", response_model=schemas.CategoriaResponse, tags=["Categorias"])
+@app.put("/categorias/{categoria_id:int}", response_model=schemas.CategoriaResponse, tags=["Categorias"])
 def rota_atualizar_categoria(categoria_id: int, categoria: schemas.CategoriaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     db_categoria = categoria_crud.atualizar_categoria(db=db, categoria_id=categoria_id, categoria=categoria)
     if not db_categoria:
@@ -76,7 +76,7 @@ def rota_atualizar_categoria(categoria_id: int, categoria: schemas.CategoriaCrea
     return db_categoria
 
 
-@app.delete("/categorias/{categoria_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Categorias"])
+@app.delete("/categorias/{categoria_id:int}", status_code=status.HTTP_204_NO_CONTENT, tags=["Categorias"])
 def rota_deletar_categoria(categoria_id: int, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     sucesso = categoria_crud.deletar_categoria(db=db, categoria_id=categoria_id)
     if sucesso is None:
@@ -104,7 +104,7 @@ def rota_listar_joias(
     return joias_crud.listar_joias(db=db, nome=nome, page=page, limit=limit)
 
 
-@app.get("/joias/{joia_id}", response_model=schemas.JoiaResponse, tags=["Jóias"])
+@app.get("/joias/{joia_id:int}", response_model=schemas.JoiaResponse, tags=["Jóias"])
 def rota_buscar_joia(joia_id: int, db: Session = Depends(get_db)):
     db_joia = joias_crud.buscar_joia(db=db, joia_id=joia_id)
     if not db_joia:
@@ -112,7 +112,7 @@ def rota_buscar_joia(joia_id: int, db: Session = Depends(get_db)):
     return db_joia
 
 
-@app.put("/joias/{joia_id}", response_model=schemas.JoiaResponse, tags=["Jóias"])
+@app.put("/joias/{joia_id:int}", response_model=schemas.JoiaResponse, tags=["Jóias"])
 def rota_atualizar_joia(joia_id: int, joia: schemas.JoiaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     categoria_existe = categoria_crud.buscar_categoria(db=db, categoria_id=joia.categoria_id)
     if not categoria_existe:
@@ -123,28 +123,25 @@ def rota_atualizar_joia(joia_id: int, joia: schemas.JoiaCreate, db: Session = De
     return db_joia
 
 
-@app.delete("/joias/{joia_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Jóias"])
+@app.delete("/joias/{joia_id:int}", status_code=status.HTTP_204_NO_CONTENT, tags=["Jóias"])
 def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
     db_joia = joias_crud.deletar_joia(db=db, joia_id=joia_id)
     if not db_joia:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return None
 
+
+
 import os
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-
+from fastapi.responses import RedirectResponse
 
 RAIZ_DO_PROJETO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 FRONTEND_DIR = os.path.join(RAIZ_DO_PROJETO, "frontend")
 
-
 @app.get("/")
 def abrir_site_principal():
-    index_path = os.path.join(FRONTEND_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    raise HTTPException(status_code=404, detail="Arquivo index.html não encontrado na raiz do frontend.")
-
+    
+    return RedirectResponse(url="/login.html")
 
 app.mount("/", StaticFiles(directory=FRONTEND_DIR), name="frontend")
