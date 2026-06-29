@@ -52,7 +52,9 @@ Certifique-se de ter o Python instalado em sua máquina. Abra o terminal na past
 
 **Passo B: Instalar as dependências necessárias (Atualizado)**
 Com o ambiente ativado, rode:
-`pip install fastapi uvicorn sqlalchemy pydantic PyJWT python-multipart passlib bcrypt==4.0.1 python-dotenv fastapi-mail``
+```
+pip install fastapi uvicorn sqlalchemy pydantic PyJWT python-multipart passlib bcrypt==4.0.1 python-dotenv fastapi-mail
+```
 
 **Passo C: Configurar Variáveis de Ambiente (.env)**
 Para que o envio de e-mails de boas-vindas funcione corretamente no cadastro, crie um arquivo chamado `.env` na raiz do backend e adicione as credenciais fornecidas pela equipe:
