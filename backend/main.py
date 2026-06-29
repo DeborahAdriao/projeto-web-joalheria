@@ -132,10 +132,19 @@ def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db), usuario: str 
 
 import os
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 
 RAIZ_DO_PROJETO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 FRONTEND_DIR = os.path.join(RAIZ_DO_PROJETO, "frontend")
 
 
-app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+@app.get("/")
+def abrir_site_principal():
+    index_path = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    raise HTTPException(status_code=404, detail="Arquivo index.html não encontrado na raiz do frontend.")
+
+
+app.mount("/", StaticFiles(directory=FRONTEND_DIR), name="frontend")
