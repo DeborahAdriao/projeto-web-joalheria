@@ -1,5 +1,5 @@
-const API_JOIAS = 'http://127.0.0.1:8000/joias';
-const API_CATEGORIAS = 'http://127.0.0.1:8000/categorias';
+const API_JOIAS = 'https://projeto-web-joalheria.onrender.com/joias';
+const API_CATEGORIAS = 'https://projeto-web-joalheria.onrender.com/categorias';
 
 let idParaDeletar = null;
 let modalExcluir;

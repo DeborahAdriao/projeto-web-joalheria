@@ -1,5 +1,5 @@
 
-const API_CADASTRO = 'http://127.0.0.1:8000/usuarios'; 
+const API_CADASTRO = 'https://projeto-web-joalheria.onrender.com/usuarios'; 
 
 $(document).ready(function() {
     

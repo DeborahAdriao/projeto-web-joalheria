@@ -1,4 +1,4 @@
-const API_LOGIN = 'http://127.0.0.1:8000/login';
+const API_LOGIN = 'https://projeto-web-joalheria.onrender.com/login';
 
 $(document).ready(function() {
     
