@@ -130,7 +130,12 @@ def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db), usuario: str 
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return None
 
+import os
 from fastapi.staticfiles import StaticFiles
 
 
-app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+
+
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
