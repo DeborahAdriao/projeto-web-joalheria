@@ -50,16 +50,19 @@ Certifique-se de ter o Python instalado em sua máquina. Abra o terminal na past
   source .venv/bin/activate
   ```
 
-**Passo B: Instalar as dependências necessárias (Atualizado Sprint 2)**
+**Passo B: Instalar as dependências necessárias (Atualizado)**
 Com o ambiente ativado, rode:
-```
-pip install fastapi uvicorn sqlalchemy pydantic PyJWT python-multipart
-```
+`pip install fastapi uvicorn sqlalchemy pydantic PyJWT python-multipart passlib bcrypt==4.0.1 python-dotenv fastapi-mail``
 
-**Passo C: Limpeza do Banco de Dados (Importante)**
+**Passo C: Configurar Variáveis de Ambiente (.env)**
+Para que o envio de e-mails de boas-vindas funcione corretamente no cadastro, crie um arquivo chamado `.env` na raiz do backend e adicione as credenciais fornecidas pela equipe:
+`EMAIL_REMETENTE=email_de_teste@gmail.com`
+`EMAIL_SENHA=senha_de_app`
+
+**Passo D: Limpeza do Banco de Dados (Importante)**
 Como a estrutura das tabelas foi atualizada nesta Sprint (adição de imagens e descrições), exclua o arquivo joalheria.db (caso exista de execuções anteriores) antes de rodar o servidor. O sistema recriará o banco automaticamente.
 
-**Passo D: Iniciar o servidor**
+**Passo E: Iniciar o servidor**
 Ainda na pasta raiz, execute o comando:
 ```
 uvicorn backend.main:app --reload
@@ -77,8 +80,8 @@ Não é necessário instalar dependências para o frontend, pois utilizamos CDNs
 
 ---
 
-## O que foi implementado na Sprint 2
-* **Relacionamento (FK):** Joias vinculadas dinamicamente às Categorias (criação via <select> populado pela API).
-* **Busca:** Filtragem de joias por nome de forma parcial na vitrine.
-* **Paginação:** Backend retornando dados e metadados (limit, pages, etc.) integrados com os controles de "Anterior/Próximo" no frontend.
-* **Autenticação JWT:** Bloqueio de rotas POST/PUT/DELETE, exigência de Token no localStorage e redirecionamento de segurança para usuários não logados.
+## Links em Produção
+* **O backend estará disponível em:** http://127.0.0.1:8000
+* **Acesse a documentação interativa (Swagger) em:** http://127.0.0.1:8000/docs
+* **Frontend da Aplicação:** [COLOCAR]
+* **Backend (API):** [COLOCAR]
