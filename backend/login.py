@@ -3,25 +3,50 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm 
 from sqlalchemy.orm import Session 
+from passlib.context import CryptContext 
 from backend import models 
 from backend.database import get_db
+from backend.database import SessionLocal
+
 
 SECRET_KEY = "chave_secreta_joalheria"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def obter_hash_senha(senha: str) -> str:
+    return pwd_context.hash(senha)
+
+def verificar_senha(senha_plana: str, senha_hash: str):
+    return pwd_context.verify(senha_plana, senha_hash)
+
+def criar_usuario_admin():
+    """Cria o usuário administrador padrão se ele ainda não existir"""
+    db = SessionLocal()
+    admin_existente = db.query(models.Usuario).filter(models.Usuario.email == "admin@joalheria.com").first()
+    
+    if not admin_existente:
+        senha_criptografada = obter_hash_senha("admin123") # Usa a função do próprio arquivo
+        novo_admin = models.Usuario(
+            email="admin@joalheria.com", 
+            senha=senha_criptografada
+        )
+        db.add(novo_admin)
+        db.commit()
+        
+    db.close()
 
 def autenticar_usuario(dados: OAuth2PasswordRequestForm, db: Session):
-    """Valida as credenciais consultando o banco de dados e gera o token JWT real"""
-    
     usuario_db = db.query(models.Usuario).filter(models.Usuario.email == dados.username).first()
     
-    if not usuario_db or usuario_db.senha != dados.password:
+    if not usuario_db or not verificar_senha(dados.password, usuario_db.senha):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-mail ou senha incorretos."
         )
+    
         
     tempo_expiracao = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"sub": usuario_db.email, "exp": tempo_expiracao}

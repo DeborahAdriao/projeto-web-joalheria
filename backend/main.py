@@ -1,6 +1,5 @@
-from sqlalchemy.orm import sessionmaker
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
@@ -9,7 +8,8 @@ from backend import models, schemas, login
 from backend.database import engine, get_db
 import backend.crud.categorias_crud as categoria_crud
 import backend.crud.joias_crud as joias_crud
-
+import backend.crud.usuarios_crud as usuarios_crud  # ⚠️ CRUD DE USUÁRIOS IMPORTADO AQUI
+from backend.email_service import enviar_email_boas_vindas 
 
 app = FastAPI(title="API Joalheria - Backend")
 
@@ -22,27 +22,34 @@ app.add_middleware(
 )
 
 models.Base.metadata.create_all(bind=engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-db_seed = SessionLocal()
 
-admin_existe = db_seed.query(models.Usuario).filter(models.Usuario.email == "admin@joalheria.com").first()
+@app.on_event("startup")
+def inicializar_sistema():
+    import backend.crud.usuarios_crud as usuarios_crud
+    usuarios_crud.criar_usuario_admin_cron()
 
-if not admin_existe:
-    novo_admin = models.Usuario(email="admin@joalheria.com", senha="admin123")
-    db_seed.add(novo_admin)
-    db_seed.commit()
-
-db_seed.close()
-
-#Rota de Login
+# --- ROTAS DE AUTENTICAÇÃO E USUARIOS ---
 
 @app.post("/login", tags=["Autenticação"])
 def rota_login(dados: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)): 
-    
     return login.autenticar_usuario(dados, db) 
 
+@app.post("/usuarios", response_model=schemas.UsuarioResponse, status_code=status.HTTP_201_CREATED, tags=["Usuários"])
+def rota_criar_usuario(
+    usuario: schemas.UsuarioCreate, 
+    background_tasks: BackgroundTasks, # ⚠️ GERENCIADOR DE TAREFAS INJETADO
+    db: Session = Depends(get_db)
+):
+    # 1. Delega a lógica de banco de dados para o CRUD
+    novo_usuario = usuarios_crud.criar_usuario(db=db, usuario=usuario)
+    
+    # 2. Dispara o e-mail em segundo plano para não travar a API
+    background_tasks.add_task(enviar_email_boas_vindas, novo_usuario.email, novo_usuario.nome)
+    
+    return novo_usuario
 
-# ROTAS PARA CATEGORIA
+
+# --- ROTAS PARA CATEGORIA ---
 
 @app.post("/categorias", response_model=schemas.CategoriaResponse, status_code=status.HTTP_201_CREATED, tags=["Categorias"])
 def rota_criar_categoria(categoria: schemas.CategoriaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
@@ -77,9 +84,7 @@ def rota_deletar_categoria(categoria_id: int, db: Session = Depends(get_db), usu
     return None
 
 
-
-#  ROTAS PARA JOIA
-
+# --- ROTAS PARA JOIA ---
 
 @app.post("/joias", response_model=schemas.JoiaResponse, status_code=status.HTTP_201_CREATED, tags=["Jóias"])
 def rota_criar_joia(joia: schemas.JoiaCreate, db: Session = Depends(get_db), usuario: str = Depends(login.verificar_token)):
