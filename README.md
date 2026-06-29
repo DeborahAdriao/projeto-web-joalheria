@@ -83,4 +83,4 @@ Não é necessário instalar dependências para o frontend, pois utilizamos CDNs
 * **O backend estará disponível em:** http://127.0.0.1:8000
 * **Acesse a documentação interativa (Swagger) em:** http://127.0.0.1:8000/docs
 * **Frontend da Aplicação:** [https://projeto-web-joalheria.onrender.com/login.html]
-* **Backend (API):** [COLOCAR]
+* **Backend (API):** [https://projeto-web-joalheria.onrender.com/docs]
