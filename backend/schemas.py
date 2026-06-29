@@ -1,15 +1,23 @@
-from typing import List                     
+from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
+from backend import models, login
+import backend.schemas as schemas  # 💡 Importando diretamente para evitar confusão do Python
 from pydantic import BaseModel, Field
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
-#Schemas p/ Login
-
-class LoginSimples(BaseModel):
+# AGORA SIM os modelos podem vir logo abaixo:
+class UsuarioCreate(BaseModel):
+    nome: str
     email: str
     senha: str
 
+class UsuarioResponse(BaseModel):
+    id: int
+    nome: str
+    email: str
 
+    class Config:
+        from_attributes = True
 class CategoriaBase(BaseModel):
     nome: str = Field(min_length=1, strip_whitespace=True)
 
