@@ -9,26 +9,37 @@ let termoBusca = '';
 const LIMITE_POR_PAGINA = 8;
 
 const tokenAtual = localStorage.getItem('token');
-const ehAdmin = tokenAtual !== null; 
+const emailAtual = localStorage.getItem('email_usuario');
+const ehAdmin = (tokenAtual !== null && emailAtual === 'admin@joalheria.com');
+const estaLogado = tokenAtual !== null; 
 
 $(document).ready(function() {
     modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
     
-    if (ehAdmin) {
-        $('#usuario-logado').text(localStorage.getItem('email_usuario')).removeClass('d-none');
+    if (estaLogado) {
+        $('#usuario-logado').text(emailAtual).removeClass('d-none');
 
-        $('#btn-sair').click(function() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('email_usuario'); 
-            window.location.href = '../login.html'; 
-        });
+        $('#btn-sair').text('SAIR')
+            .removeClass('btn-dark text-white rounded-0 px-4 py-2')
+            .addClass('btn-link text-dark p-0')
+            .off('click').click(function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('email_usuario'); 
+                window.location.href = '../login.html'; 
+            });
+
+        if (!ehAdmin) {
+            $('a[href="criar/index.html"]').addClass('d-none'); 
+            $('a[href="../categorias/index.html"]').addClass('d-none');  
+        }
+
     } else {
         $('#usuario-logado').addClass('d-none');
 
         $('#btn-sair').text('LOGIN')
             .removeClass('btn-link text-dark p-0')
             .addClass('btn-dark text-white rounded-0 px-4 py-2')
-            .click(function() {
+            .off('click').click(function() {
                 window.location.href = '../login.html';
             });
         
