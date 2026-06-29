@@ -129,3 +129,8 @@ def rota_deletar_joia(joia_id: int, db: Session = Depends(get_db), usuario: str 
     if not db_joia:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Jóia não encontrada.")
     return None
+
+from fastapi.staticfiles import StaticFiles
+
+
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
