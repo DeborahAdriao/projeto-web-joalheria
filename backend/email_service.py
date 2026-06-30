@@ -2,10 +2,10 @@ import os
 from dotenv import load_dotenv
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 
-# Carrega as senhas do arquivo .env
+
 load_dotenv()
 
-# Configuração de conexão com o Gmail
+
 conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv("EMAIL_REMETENTE"),
     MAIL_PASSWORD=os.getenv("EMAIL_SENHA"),

@@ -36,7 +36,7 @@ def listar_joias(db: Session, nome: str = None, page: int = 1, limit: int = 10):
 def buscar_joia(db: Session, joia_id: int):
     return db.query(models.Joia).filter(models.Joia.id == joia_id).first()
 
-# 4. ATUALIZAR
+
 def atualizar_joia(db: Session, joia_id: int, joia: schemas.JoiaCreate):
     db_joia = db.query(models.Joia).filter(models.Joia.id == joia_id).first()
     if db_joia:
