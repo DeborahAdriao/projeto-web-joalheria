@@ -4,7 +4,7 @@ from backend import models, schemas
 from backend.database import SessionLocal
 
 def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
-    # 1. Verifica se o e-mail já existe
+    # Verificação de e-mail duplicad
     usuario_existente = db.query(models.Usuario).filter(models.Usuario.email == usuario.email).first()
     if usuario_existente:
         raise HTTPException(
@@ -12,13 +12,13 @@ def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
             detail="Este e-mail já está cadastrado em nosso sistema."
         )
     
-    # Import local do login para evitar importação cíclica (nó no Python)
+    
     from backend import login
     
-    # 2. Criptografa a senha
+  
     senha_criptografada = login.obter_hash_senha(usuario.senha)
     
-    # 3. Cria e salva o usuário
+    
     novo_usuario = models.Usuario(
         nome=usuario.nome,
         email=usuario.email,
@@ -31,9 +31,9 @@ def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
     
     return novo_usuario
 
-
+#vai ser criado toda vez que forçar um deploy para iniciar já no BD e a gente conseguir usar o sistema
 def criar_usuario_admin_cron():
-    """Cria o usuário administrador padrão se ele ainda não existir"""
+    """Cria o usuário administrador padrão quando inicializa o sistema"""
     db = SessionLocal()
     try:
         from backend import login

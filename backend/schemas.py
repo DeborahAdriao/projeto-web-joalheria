@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from backend import models, login
-import backend.schemas as schemas  # 💡 Importando diretamente para evitar confusão do Python
+import backend.schemas as schemas  
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
-# AGORA SIM os modelos podem vir logo abaixo:
+#SCHEMAS DE USUÁRIO
+
 class UsuarioCreate(BaseModel):
     nome: str
     email: str
@@ -18,6 +19,9 @@ class UsuarioResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+#SCHEMAS DE CATEGORIA
+
 class CategoriaBase(BaseModel):
     nome: str = Field(min_length=1, strip_whitespace=True)
 

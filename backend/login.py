@@ -22,21 +22,6 @@ def obter_hash_senha(senha: str) -> str:
 def verificar_senha(senha_plana: str, senha_hash: str):
     return pwd_context.verify(senha_plana, senha_hash)
 
-def criar_usuario_admin():
-    """Cria o usuário administrador padrão se ele ainda não existir"""
-    db = SessionLocal()
-    admin_existente = db.query(models.Usuario).filter(models.Usuario.email == "admin@joalheria.com").first()
-    
-    if not admin_existente:
-        senha_criptografada = obter_hash_senha("admin123") # Usa a função do próprio arquivo
-        novo_admin = models.Usuario(
-            email="admin@joalheria.com", 
-            senha=senha_criptografada
-        )
-        db.add(novo_admin)
-        db.commit()
-        
-    db.close()
 
 def autenticar_usuario(dados: OAuth2PasswordRequestForm, db: Session):
     usuario_db = db.query(models.Usuario).filter(models.Usuario.email == dados.username).first()
