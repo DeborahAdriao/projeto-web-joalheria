@@ -42,13 +42,14 @@ function carregarCategorias() {
             }
 
             categorias.forEach(categoria => {
+                const nomeSeguro = categoria.nome.replace(/'/g, "\\'");
                 const linha = `
                     <tr>
                         <td class="ps-4 fw-bold text-muted">#${categoria.id}</td>
                         <td>${categoria.nome}</td>
                         <td class="text-end pe-4">
                             <a href="editar/index.html?id=${categoria.id}" class="btn btn-outline-dark btn-sm" style="...">EDITAR</a>
-                            <button onclick="deletarCategoria(${categoria.id})" class="btn btn-dark btn-sm ms-1" style="border-radius: 0; font-size: 0.75rem;">EXCLUIR</button>
+                            <button onclick="deletarCategoria(${categoria.id}, '${nomeSeguro}')" class="btn btn-dark btn-sm ms-1" style="border-radius: 0; font-size: 0.75rem;">EXCLUIR</button>
                         </td>
                     </tr>
                 `;
@@ -62,8 +63,9 @@ function carregarCategorias() {
         });
 }
 
-function deletarCategoria(id) {
+function deletarCategoria(id, nome) {
     idParaDeletar = id; 
+    $('#nome-item-excluir').text(`"${nome}"`); 
     modalExcluir.show();
 }
 
