@@ -64,8 +64,8 @@ function carregarCategorias() {
 }
 
 function deletarCategoria(id, nome) {
-    idParaDeletar = id; 
-    $('#nome-item-excluir').text(`"${nome}"`); 
+    idParaDeletar = id;
+    $('#nome-item-excluir').text(nome);
     modalExcluir.show();
 }
 

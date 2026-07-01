@@ -84,17 +84,11 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '.btn-deletar-joia', function() {
-    idParaDeletar = $(this).data('id'); 
-    const nomeDaJoia = $(this).attr('data-nome');
-    
-    console.log("Nome capturado:", nomeDaJoia); 
-    
-    if (nomeDaJoia) {
-        $('#nome-item-excluir').text(`"${nomeDaJoia}"`);
-    } else {
-        $('#nome-item-excluir').text("este item"); 
-    }
-    
+    idParaDeletar = $(this).data('id');
+    const nomeDaJoia = $(this).data('nome');
+
+    $('#nome-item-excluir').text(nomeDaJoia);
+
     modalExcluir.show();
 });
 });
