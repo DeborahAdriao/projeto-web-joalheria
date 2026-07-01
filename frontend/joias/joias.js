@@ -85,6 +85,8 @@ $(document).ready(function() {
 
     $(document).on('click', '.btn-deletar-joia', function() {
         idParaDeletar = $(this).data('id'); 
+        const nomeDaJoia = $(this).data('nome');
+        $('#nome-item-excluir').text(`"${nomeDaJoia}"`); // Adiciona o nome no modal
         modalExcluir.show();
     });
 });
@@ -142,10 +144,11 @@ async function carregarVitrine() {
 
             let botoesAcao = '';
             if (ehAdmin) {
+                // Adicionei o data-nome aqui para capturar o nome seguro
                 botoesAcao = `
                     <div class="d-flex justify-content-center gap-2 mt-3">
                         <a href="editar/index.html?id=${joia.id}" class="btn btn-outline-dark btn-sm px-3" style="...">EDITAR</a>
-                        <button class="btn btn-dark btn-sm px-3 btn-deletar-joia" data-id="${joia.id}" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
+                        <button class="btn btn-dark btn-sm px-3 btn-deletar-joia" data-id="${joia.id}" data-nome="${joia.nome.replace(/"/g, '&quot;')}" style="border-radius: 0; font-size: 0.7rem; letter-spacing: 1px;">EXCLUIR</button>
                     </div>
                 `;
             }
